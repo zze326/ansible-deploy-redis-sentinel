@@ -13,7 +13,7 @@
 
 - name: 重启 Redis 实例
   systemd:
-    name: 'redis-{{ sentinel_port }}'
+    name: 'redis-{{ instance_port }}'
     daemon_reload: yes
     state: restarted
   when: configure_instance_result is changed
