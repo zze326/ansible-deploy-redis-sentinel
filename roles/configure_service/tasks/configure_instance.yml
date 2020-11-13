@@ -1,0 +1,13 @@
+- name: 渲染 Redis 实例配置文件
+  template:
+    src: redis.conf
+    dest: '{{ install_dir }}/redis_{{ instance_port }}/conf/'
+    owner: redis
+    group: redis
+  notify: 重启 Redis 实例
+
+- name: 渲染 Redis 实例的 Systemd Service Unit 配置文件
+  template:
+    src: redis.service
+    dest: '{% if ansible_distribution == "CentOS" %}/usr{% endif %}/lib/systemd/system/redis-{{ instance_port }}.service'
+  notify: 重启 Redis 实例

@@ -1,0 +1,23 @@
+- name: 根据配置文件加载节点信息
+  run_once: yes
+  set_fact: 
+    master_list_str: '{% for host in groups["all"] %}{% if "master" in hostvars[host] and hostvars[host].master %}{{ host }},{% endif %}{% endfor %}'
+
+- name: 设置变量
+  run_once: yes
+  set_fact:
+    master_list: '{{ master_list_str[0:-1].split(",") }}'
+
+- name: 启动 Redis 实例
+  systemd:
+    name: 'redis-{{ instance_port }}'
+    state: started
+
+- name: 配置主从关系
+  shell: redis-cli -a '{{ password }}' slaveof {{ master_list[0] }} {{ instance_port }}
+  when: not ansible_host in master_list
+
+- name: 启动哨兵实例
+  systemd:
+    name: 'redis-{{ sentinel_port }}'
+    state: started

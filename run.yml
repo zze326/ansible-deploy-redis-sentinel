@@ -1,0 +1,15 @@
+- hosts: all
+  become: yes
+  gather_facts: yes
+  roles:
+  # 初始化环境
+  - role: init
+    tags: init
+  # 配置
+  - role: configure_service
+    tags: configure_service
+  # 启动服务
+  - role: start_service
+    tags: start_service
+
+ 

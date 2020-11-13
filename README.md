@@ -1,0 +1,1 @@
+# ansible-deploy-redis-sentinel

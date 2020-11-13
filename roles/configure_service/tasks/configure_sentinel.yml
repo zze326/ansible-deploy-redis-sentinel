@@ -1,0 +1,13 @@
+- name: 渲染哨兵实例配置文件
+  template:
+    src: sentinel.conf
+    dest: '{{ install_dir }}/redis_{{ sentinel_port }}/conf/redis.conf'
+    owner: redis
+    group: redis
+  notify: 重启哨兵实例
+
+- name: 渲染哨兵实例的 Systemd Service Unit 配置文件
+  template:
+    src: sentinel.service
+    dest: '{% if ansible_distribution == "CentOS" %}/usr{% endif %}/lib/systemd/system/redis-{{ sentinel_port }}.service'
+  notify: 重启哨兵实例
