@@ -8,10 +8,17 @@
   set_fact:
     master_list: '{{ master_list_str[0:-1].split(",") }}'
 
-- name: 启动 Redis 实例
+- name: 启动 Redis Master 实例
   systemd:
     name: 'redis-{{ instance_port }}'
     state: started
+  when: ansible_host in master_list
+
+- name: 启动 Redis Slave 实例
+  systemd:
+    name: 'redis-{{ instance_port }}'
+    state: started
+  when: not ansible_host in master_list
 
 - name: 配置主从关系
   shell: redis-cli -a '{{ password }}' slaveof {{ master_list[0] }} {{ instance_port }}
